@@ -87,3 +87,5 @@ ENV/
 
 # Rope project settings
 .ropeproject
+CW1.sln
+.vs/CW1/v14/.suo

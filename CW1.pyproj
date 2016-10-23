@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{17634497-2bb7-43ac-bd27-40c15da760a5}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>GeneticAlgorithm.py</StartupFile>
+    <StartupFile>runCWPart2Experiment.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -21,139 +21,77 @@
     <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="coco\code-experiments\examples\bbob2009-c-cmaes\README.txt" />
-    <Content Include="coco\code-experiments\src\bbob2009_testcases.txt" />
-    <Content Include="coco\code-experiments\src\bbob2009_testcases2.txt" />
-    <Content Include="coco\code-experiments\test\unit-test\test_hypervolume.txt" />
-    <Content Include="coco\code-postprocessing\bbob_pproc\benchmarkshortinfos.txt" />
-    <Content Include="coco\code-postprocessing\bbob_pproc\biobj-benchmarkshortinfos.txt" />
-    <Content Include="coco\code-postprocessing\bbob_pproc\compall\algorithmshortinfos-best2009-in-grey.txt" />
-    <Content Include="coco\code-postprocessing\bbob_pproc\GECCOBBOBbenchmarkinfos.txt" />
-    <Content Include="coco\code-postprocessing\bbob_pproc\js\sorttable.js" />
-    <Content Include="coco\code-postprocessing\bbob_pproc\latex_commands_for_html.html" />
-    <Content Include="coco\code-postprocessing\bbob_pproc\tth\license.txt" />
-    <Content Include="coco\code-postprocessing\bbob_pproc\tth\tth.gif" />
-    <Content Include="coco\code-postprocessing\bbob_pproc\tth\tth_manual.html" />
-    <Content Include="coco\code-preprocessing\archive-update\test-data\archives-input\f1-13_i11-12_2D.txt" />
-    <Content Include="coco\code-preprocessing\archive-update\test-data\archives-results\archives-analysis.txt" />
-    <Content Include="coco\code-preprocessing\archive-update\test-data\archives-results\archives-diff.txt" />
-    <Content Include="coco\code-preprocessing\archive-update\test-data\archives-results\archives-extremes.txt" />
-    <Content Include="coco\code-preprocessing\archive-update\test-data\archives-results\bbob-biobj_f48_i07_d02_analysis.txt" />
-    <Content Include="coco\doxygen.ini" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="coco\code-experiments\build\c\make.py" />
-    <Compile Include="coco\code-experiments\build\python\coco_test.py" />
-    <Compile Include="coco\code-experiments\build\python\demo.py" />
-    <Compile Include="coco\code-experiments\build\python\example_experiment.py" />
-    <Compile Include="coco\code-experiments\build\python\python\exceptions.py" />
-    <Compile Include="coco\code-experiments\build\python\python\utilities.py" />
-    <Compile Include="coco\code-experiments\build\python\python\__init__.py" />
-    <Compile Include="coco\code-experiments\documentation\onion.py" />
-    <Compile Include="coco\code-experiments\test\integration-test\testcase_generator.py" />
-    <Compile Include="coco\code-experiments\tools\amalgamate.py" />
-    <Compile Include="coco\code-experiments\tools\cocoutils.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\algportfolio.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\bestalg.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\bwsettings.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\changeAlgIdAndComment.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\cococommands.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\comp2\ppfig2.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\comp2\pprldistr2.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\comp2\ppscatter.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\comp2\pptable2.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\comp2\__init__.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\compall\determineFtarget2.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\compall\organizeRTDpictures.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\compall\ppfigs.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\compall\ppperfprof.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\compall\pprldmany.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\compall\pptables.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\compall\__init__.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\config.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\dataoutput.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\determineFtarget.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\findfiles.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\firstsession.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\genericsettings.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\grayscalesettings.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\htmldesc.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\old_ranksumtest.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\ppconverrorbars.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\ppfig.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\ppfigdim.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\ppfigparam.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\pplogloss.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\pprldistr.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\pprldistr2009_hardestRLB.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\pproc.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\pprocold.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\ppsingle.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\pptable.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\pptex.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\preparehtml.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\preparetexforhtml.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\readalign.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\rungeneric.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\rungeneric1.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\rungeneric2.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\rungenericmany.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\sanitycheck.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\testbedsettings.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\toolsdivers.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\toolsstats.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\__init__.py" />
-    <Compile Include="coco\code-postprocessing\bbob_pproc\__main__.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\archive_analysis.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\archive_difference.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\archive_reformat.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\archive_split.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\archive_thinning.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\archive_update.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\extract_extremes.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\python\archive_exceptions.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\python\archive_functions.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\python\archive_load_data.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\python\__init__.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\test_archives.py" />
-    <Compile Include="coco\code-preprocessing\archive-update\timing.py" />
-    <Compile Include="coco\code-preprocessing\log-reconstruction\evaluations_append.py" />
-    <Compile Include="coco\code-preprocessing\log-reconstruction\log_reconstruct.py" />
-    <Compile Include="coco\code-preprocessing\log-reconstruction\merge_lines_in_info_files.py" />
-    <Compile Include="coco\code-preprocessing\log-reconstruction\test_reconstruction.py" />
-    <Compile Include="coco\do.py" />
+    <Compile Include="coco_python\bbobbenchmarks.py" />
+    <Compile Include="coco_python\bbob_pproc\algportfolio.py" />
+    <Compile Include="coco_python\bbob_pproc\bestalg.py" />
+    <Compile Include="coco_python\bbob_pproc\bwsettings.py" />
+    <Compile Include="coco_python\bbob_pproc\changeAlgIdAndComment.py" />
+    <Compile Include="coco_python\bbob_pproc\cococommands.py" />
+    <Compile Include="coco_python\bbob_pproc\comp2\ppfig2.py" />
+    <Compile Include="coco_python\bbob_pproc\comp2\pprldistr2.py" />
+    <Compile Include="coco_python\bbob_pproc\comp2\ppscatter.py" />
+    <Compile Include="coco_python\bbob_pproc\comp2\pptable2.py" />
+    <Compile Include="coco_python\bbob_pproc\comp2\__init__.py" />
+    <Compile Include="coco_python\bbob_pproc\compall\organizeRTDpictures.py" />
+    <Compile Include="coco_python\bbob_pproc\compall\ppfigs.py" />
+    <Compile Include="coco_python\bbob_pproc\compall\ppperfprof.py" />
+    <Compile Include="coco_python\bbob_pproc\compall\pprldmany.py" />
+    <Compile Include="coco_python\bbob_pproc\compall\pptables.py" />
+    <Compile Include="coco_python\bbob_pproc\compall\__init__.py" />
+    <Compile Include="coco_python\bbob_pproc\config.py" />
+    <Compile Include="coco_python\bbob_pproc\dataoutput.py" />
+    <Compile Include="coco_python\bbob_pproc\findfiles.py" />
+    <Compile Include="coco_python\bbob_pproc\firstsession.py" />
+    <Compile Include="coco_python\bbob_pproc\genericsettings.py" />
+    <Compile Include="coco_python\bbob_pproc\grayscalesettings.py" />
+    <Compile Include="coco_python\bbob_pproc\htmldesc.py" />
+    <Compile Include="coco_python\bbob_pproc\ppconverrorbars.py" />
+    <Compile Include="coco_python\bbob_pproc\ppfig.py" />
+    <Compile Include="coco_python\bbob_pproc\ppfigdim.py" />
+    <Compile Include="coco_python\bbob_pproc\ppfigparam.py" />
+    <Compile Include="coco_python\bbob_pproc\pplogloss.py" />
+    <Compile Include="coco_python\bbob_pproc\pprldistr.py" />
+    <Compile Include="coco_python\bbob_pproc\pproc.py" />
+    <Compile Include="coco_python\bbob_pproc\ppsingle.py" />
+    <Compile Include="coco_python\bbob_pproc\pptable.py" />
+    <Compile Include="coco_python\bbob_pproc\pptex.py" />
+    <Compile Include="coco_python\bbob_pproc\readalign.py" />
+    <Compile Include="coco_python\bbob_pproc\rungeneric.py" />
+    <Compile Include="coco_python\bbob_pproc\rungeneric1.py" />
+    <Compile Include="coco_python\bbob_pproc\rungeneric2.py" />
+    <Compile Include="coco_python\bbob_pproc\rungenericmany.py" />
+    <Compile Include="coco_python\bbob_pproc\sanitycheck.py" />
+    <Compile Include="coco_python\bbob_pproc\toolsdivers.py" />
+    <Compile Include="coco_python\bbob_pproc\toolsstats.py" />
+    <Compile Include="coco_python\bbob_pproc\__init__.py" />
+    <Compile Include="coco_python\exampleexperiment.py" />
+    <Compile Include="coco_python\exampletiming.py" />
+    <Compile Include="coco_python\fgeneric.py" />
     <Compile Include="GeneticAlgorithm.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="runCWPart2Experiment.py" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="coco" />
-    <Folder Include="coco\code-experiments\" />
-    <Folder Include="coco\code-experiments\build\" />
-    <Folder Include="coco\code-experiments\build\c" />
-    <Folder Include="coco\code-experiments\build\python" />
-    <Folder Include="coco\code-experiments\build\python\python" />
-    <Folder Include="coco\code-experiments\documentation" />
-    <Folder Include="coco\code-experiments\examples\" />
-    <Folder Include="coco\code-experiments\examples\bbob2009-c-cmaes" />
-    <Folder Include="coco\code-experiments\src" />
-    <Folder Include="coco\code-experiments\test\" />
-    <Folder Include="coco\code-experiments\test\integration-test" />
-    <Folder Include="coco\code-experiments\test\unit-test" />
-    <Folder Include="coco\code-experiments\tools" />
-    <Folder Include="coco\code-postprocessing\" />
-    <Folder Include="coco\code-postprocessing\bbob_pproc" />
-    <Folder Include="coco\code-postprocessing\bbob_pproc\comp2" />
-    <Folder Include="coco\code-postprocessing\bbob_pproc\compall" />
-    <Folder Include="coco\code-postprocessing\bbob_pproc\js" />
-    <Folder Include="coco\code-postprocessing\bbob_pproc\tth" />
-    <Folder Include="coco\code-preprocessing\" />
-    <Folder Include="coco\code-preprocessing\archive-update" />
-    <Folder Include="coco\code-preprocessing\archive-update\python" />
-    <Folder Include="coco\code-preprocessing\archive-update\test-data\" />
-    <Folder Include="coco\code-preprocessing\archive-update\test-data\archives-input" />
-    <Folder Include="coco\code-preprocessing\archive-update\test-data\archives-results" />
-    <Folder Include="coco\code-preprocessing\log-reconstruction" />
+    <Folder Include="coco_python\" />
+    <Folder Include="coco_python\bbob_pproc\" />
+    <Folder Include="coco_python\bbob_pproc\comp2\" />
+    <Folder Include="coco_python\bbob_pproc\compall\" />
+    <Folder Include="coco_python\bbob_pproc\js\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="coco_python\bbobbenchmarks.pyc" />
+    <Content Include="coco_python\bbob_pproc\benchmarkshortinfos.txt" />
+    <Content Include="coco_python\bbob_pproc\bestalgentries2009.pickle.gz" />
+    <Content Include="coco_python\bbob_pproc\GECCOBBOBbenchmarkinfos.txt" />
+    <Content Include="coco_python\bbob_pproc\js\sorttable.js" />
+    <Content Include="coco_python\bbob_pproc\latex_commands_for_html.html" />
+    <Content Include="coco_python\bbob_pproc\pprldistr2009_1e-8.pickle.gz" />
+    <Content Include="coco_python\bbob_pproc\pprldistr2009_hardestRLB.pickle.gz" />
+    <Content Include="coco_python\benchmarkinfos.txt" />
+    <Content Include="coco_python\fgeneric.pyc" />
+    <Content Include="coco_python\LICENSE.txt" />
+    <Content Include="coco_python\README.txt" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
