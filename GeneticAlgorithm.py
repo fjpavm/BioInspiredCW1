@@ -1,7 +1,7 @@
 import random
 
 class GeneticAlgorithm(object):
-    def __init__(self, in_fitnessFunction, in_createRandomIndividual, in_mutateIndividual, in_crossoverIndividuals = None, in_parentSelection = None, in_generationalSelection = None, in_populationSize = 100, in_parentRate = 0.2, in_crossoverRate = 0.0, in_keepBest = False, in_introduceAlien = False):
+    def __init__(self, in_fitnessFunction, in_createRandomIndividual, in_mutateIndividual, in_crossoverIndividuals = None, in_parentSelection = None, in_generationalSelection = None, in_populationSize = 100, in_parentRate = 0.01, in_childrenRate = 0.5, in_crossoverRate = 0.0, in_keepBest = False, in_introduceAlien = False):
         self.m_fitnessFunction = in_fitnessFunction
         self.m_createRandomIndividual = in_createRandomIndividual
         self.m_mutateIndividual = in_mutateIndividual
@@ -14,11 +14,15 @@ class GeneticAlgorithm(object):
         self.m_generationalSelection = in_generationalSelection
         self.m_populationSize = in_populationSize
         self.m_parentRate = in_parentRate
+        self.m_childrenRate = in_childrenRate
         self.m_crossoverRate = in_crossoverRate
         self.m_keepBest = in_keepBest
         self.m_introduceAlien = in_introduceAlien
         self.m_populationList = list()
         self.m_best = None
+        self.m_currentGeneration = 0
+        self.m_overalBest = None
+        self.m_overalBestGeneration = 0
 
     def initializePopulation(self, in_newPopulationSize = None):
         if in_newPopulationSize != None:
@@ -26,6 +30,9 @@ class GeneticAlgorithm(object):
         self.m_populationList = list()
         newSize = 0
         self.m_best = None
+        self.m_currentGeneration = 0
+        self.m_overalBest = None
+        self.m_overalBestGeneration = 0
         while newSize < self.m_populationSize:
             newSize += 1
             individual = self.m_createRandomIndividual()
@@ -33,6 +40,7 @@ class GeneticAlgorithm(object):
             self.m_populationList.append((individual,fitness))
             if self.m_best == None or self.m_best[1] < fitness:
                 self.m_best = (individual,fitness)
+        self.m_overalBest = self.m_best
         return self.m_populationList
 
     def advanceOneGeneration(self):
@@ -40,11 +48,16 @@ class GeneticAlgorithm(object):
         parents = set()
         numParents = int(min(max(1, round(self.m_parentRate*self.m_populationSize)), self.m_populationSize))
         selectedParents = self.m_parentSelection(self.m_populationList, numParents)
-        # apply genetic operators
-        parentIndex = 0
+        # apply genetic operators to create children
         tryCrossover = self.m_crossoverRate > 0 and self.m_crossoverIndividuals != None and numParents > 1
         childList = []
-        while parentIndex < numParents:
+        numChildren = int(min(max(1, round(self.m_childrenRate*self.m_populationSize)), self.m_populationSize))
+        randRange = list(range(numChildren))
+        random.shuffle(randRange)
+        parentRandomOrder = [i%numParents for i in randRange]
+        childIndex = 0
+        while childIndex < numChildren:
+            parentIndex = parentRandomOrder[childIndex]
             parent = selectedParents[parentIndex]
             child = None
             if tryCrossover == True and random.random() < self.m_crossoverRate:
@@ -56,7 +69,7 @@ class GeneticAlgorithm(object):
                 child = self.m_mutateIndividual(parent[0])
             fitness = self.m_fitnessFunction(child)
             childList.append((child, fitness))
-            parentIndex += 1
+            childIndex += 1
         # population update
         numberToSelect = self.m_populationSize
         newGenerationList = []
@@ -72,11 +85,28 @@ class GeneticAlgorithm(object):
         self.m_populationList = newGenerationList + self.m_generationalSelection(self.m_populationList, childList, numberToSelect)
         # recalculate best
         self.m_best = None
+        self.m_currentGeneration += 1
         for individual in self.m_populationList:
             if self.m_best == None or self.m_best[1] < individual[1]:
                 self.m_best = individual
+                if self.m_best[1] > self.m_overalBest[1]:
+                    self.m_overalBest = self.m_best
+                    self.m_overalBestGeneration = self.m_currentGeneration
         return self.m_populationList
-        
+
+    def run(self, in_maxGenerations = None, in_targetFitness = None, in_staleStop = None, in_populationSize = None):
+        self.initializePopulation(in_populationSize)
+        # have stale stop condition equal to pop size if no stop condition is given
+        if in_maxGenerations == None and in_targetFitness == None and in_staleStop == None:
+            in_staleStop = self.m_populationSize
+        while True:
+            if in_maxGenerations != None and self.m_currentGeneration >= in_maxGenerations:
+                return self.m_overalBest, self.m_overalBestGeneration, 'maxGen', self.m_currentGeneration
+            if in_targetFitness != None and self.m_overalBest >= in_targetFitness:
+                return self.m_overalBest, self.m_overalBestGeneration, 'target', self.m_currentGeneration
+            if in_staleStop != None and self.m_currentGeneration - self.m_overalBestGeneration >= in_staleStop:
+                return self.m_overalBest, self.m_overalBestGeneration, 'stale', self.m_currentGeneration
+            self.advanceOneGeneration()
         
 
 
@@ -111,13 +141,13 @@ class ProbabilisticFitnessSelection(SelectionFunction):
         for individual in in_populationList:
             sumAdjustedFitness += (individual[1] - adjustedMin)
         # select one at a time removing from original list
-        selectedList = []
+        selectedList = [None]*numToSelect
         while numToSelect > 0:
             index, individual = self.chooseOne(sumAdjustedFitness, in_populationList, adjustedMin)
-            selectedList.append(individual)
             in_populationList.pop(index)
             sumAdjustedFitness -= (individual[1] - adjustedMin)
             numToSelect -= 1
+            selectedList[numToSelect] = individual
         return selectedList
 
     def chooseOne(self, in_sumAdjustedFitness, in_populationList, in_adjustedMin):
@@ -151,26 +181,15 @@ class ChildrenAndBestCurrent(GenerationalSelectionFunction):
         in_currentGeneration.sort(fitnessCompare, reverse=True)
         return in_children + in_currentGeneration[0:in_numToSelect-numChildren]
 
-
-
 # For testing code during algorithm development
 if __name__ == "__main__":
     def fit(ind):
-        return 50 - abs(float(ind)-50)
+        return -float(ind-50)*float(ind-50)
     def creatRand():
-        return random.randint(1,100)
+        return random.randint(-1000,1000)
     def mutate(ind):
         return random.choice([ind-1,ind+1])
-    geneticAlgorithm = GeneticAlgorithm(fit, creatRand, mutate, in_populationSize = 10)
-    testPopList = geneticAlgorithm.initializePopulation()
-    print 'Initial Population: '+ str(testPopList)
-    print 'best: ' + str(geneticAlgorithm.m_best)
-    simpleSelection = SelectionFunction()
-    probabilisticSelection = ProbabilisticFitnessSelection()
-    print 'simple selection: ' + str(simpleSelection(testPopList, 10))
-    print 'probabilistic fitness selection: ' + str(probabilisticSelection(testPopList, 10))
-    numGen = 10
-    for gen in range(numGen):
-        print 'gen ' + str(gen) + ': ' + str(geneticAlgorithm.advanceOneGeneration())
-        print 'best after ' + str(gen) + ' generations: ' + str(geneticAlgorithm.m_best)
+    geneticAlgorithm = GeneticAlgorithm(fit, creatRand, mutate, in_parentSelection = None)
+    print 'result: ' + str(geneticAlgorithm.run(in_maxGenerations = 10000, in_populationSize = 1000, in_staleStop = 100))
+
    
