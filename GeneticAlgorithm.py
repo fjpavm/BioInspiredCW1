@@ -109,7 +109,7 @@ class GeneticAlgorithm(object):
         while True:
             if in_maxGenerations != None and self.m_currentGeneration >= in_maxGenerations:
                 return self.m_overalBest, self.m_overalBestGeneration, 'maxGen', self.m_currentGeneration
-            if in_targetFitness != None and self.m_overalBest >= in_targetFitness:
+            if in_targetFitness != None and self.m_overalBest[1] >= in_targetFitness:
                 return self.m_overalBest, self.m_overalBestGeneration, 'target', self.m_currentGeneration
             if in_staleStop != None and self.m_currentGeneration - self.m_overalBestGeneration >= in_staleStop:
                 return self.m_overalBest, self.m_overalBestGeneration, 'stale', self.m_currentGeneration

@@ -10,7 +10,8 @@ import VectorGAOperators
 
 datapathbase = 'GA'
 
-dimensions = (2, 3, 5, 10, 20, 40)
+# dimensions = (2, 3, 5, 10, 20, 40)
+dimensions = (5,10)
 function_ids = bbobbenchmarks.nfreeIDs 
 instances = range(1, 6) + range(41, 51) 
 
@@ -20,12 +21,12 @@ def createPopulationSelection(in_popSelect, in_popSelectParam):
     if in_popSelect == 'B':
         return GeneticAlgorithm.RankSelection(in_popSelectParam)
 
-def tryWithParameters(in_popSize, in_childrenRate, in_popSelect = 'T', in_popSelectParam = 2, in_crossoverRate = 0.0, in_keepBest = False, in_alien = False):
+def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_popSelect = 'T', in_popSelectParam = 2, in_crossoverRate = 0.0, in_keepBest = False, in_alien = False):
     t0 = time.time()
     np.random.seed(int(t0))
     opts = dict(algid='GeneticAlgorithm',
             comments='')
-    datapath = datapathbase + '_P' + str(in_popSize) + '_C' + str(in_childrenRate) + '_' + in_popSelect + str(in_popSelectParam)
+    datapath = datapathbase + '_P' + str(in_popSize) + '_C' + str(in_childrenRate) + '_P' + str(in_parentRate) + '_' + in_popSelect + str(in_popSelectParam)
     if in_crossoverRate > 0.0:
         datapath += '_Cross' + str(in_crossoverRate)
     if in_keepBest == True:
@@ -49,13 +50,14 @@ def tryWithParameters(in_popSize, in_childrenRate, in_popSelect = 'T', in_popSel
                                                        in_mutateIndividual = vectorGAOperators.mutate,
                                                        in_crossoverIndividuals = vectorGAOperators.boxcrossover,
                                                        in_parentSelection = parentSelection,
+                                                       in_parentRate = in_parentRate,
                                                        in_childrenRate = in_childrenRate,
                                                        in_keepBest = in_keepBest,
                                                        in_introduceAlien = in_alien,
                                                        in_populationSize = in_popSize)
 
-                ga.run(in_targetFitness = -f.ftarget, in_staleStop = 100)
-                 
+                result = ga.run(in_targetFitness = -f.ftarget, in_staleStop = 100)
+                print 'result: ' + str(result)
                 f.finalizerun()
             print '      date and time: %s' % (time.asctime())
         print '---- dimension %d-D done ----' % dim
@@ -63,8 +65,8 @@ def tryWithParameters(in_popSize, in_childrenRate, in_popSelect = 'T', in_popSel
 
 # population size and children rate experiment
 childrenRateList = [0.01, 0.25, 0.5, 0.75, 0.99] 
-popSizeList = [10, 100, 1000]
+popSizeList = [50, 100, 250, 500]
 for childRate in childrenRateList:
     for popSize in popSizeList:
         print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate)
-        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate)
+        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.2)
