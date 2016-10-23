@@ -115,6 +115,31 @@ class SelectionFunction(object):
     def __call__(self, in_populationList, numToSelect):
         return in_populationList[0:numToSelect]
 
+# Allows duplicates
+class TournamentSelection(SelectionFunction):
+    def __init__(self, in_tournamentSize = 2):
+        self.m_tournamentSize = in_tournamentSize
+
+    # Selects according to tournament results
+    def __call__(self, in_populationList, numToSelect):
+        # select one at a time by tournament
+        selectedList = [None]*numToSelect
+        while numToSelect > 0:
+            numToSelect -= 1
+            selectedList[numToSelect] =  self.tournament(in_populationList)
+        return selectedList
+
+    def tournament(self, in_populationList):
+        tournamentSize = self.m_tournamentSize
+        best = None
+        while tournamentSize > 0:
+            tournamentSize -= 1
+            individual = random.choice(in_populationList)
+            if best == None or individual[1] > best[1]:
+                best = individual
+        return best
+
+# Avoids duplicates
 class ProbabilisticFitnessSelection(SelectionFunction):
     def __init__(self, in_dropMinPercentage = 0.1):
         # if in_dropMinPercentage is 0.0 then worse will never be chosen unless it's also the best
@@ -189,7 +214,7 @@ if __name__ == "__main__":
         return random.randint(-1000,1000)
     def mutate(ind):
         return random.choice([ind-1,ind+1])
-    geneticAlgorithm = GeneticAlgorithm(fit, creatRand, mutate, in_parentSelection = None)
+    geneticAlgorithm = GeneticAlgorithm(fit, creatRand, mutate, in_parentSelection = TournamentSelection())
     print 'result: ' + str(geneticAlgorithm.run(in_maxGenerations = 10000, in_populationSize = 1000, in_staleStop = 100))
 
    
