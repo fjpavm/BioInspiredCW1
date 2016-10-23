@@ -1,5 +1,12 @@
 import random
 
+# Helper Functions
+
+def fitnessCompare(x, y):
+    return cmp(x[1],y[1])
+
+# Class Definitions 
+
 class GeneticAlgorithm(object):
     def __init__(self, in_fitnessFunction, in_createRandomIndividual, in_mutateIndividual, in_crossoverIndividuals = None, in_parentSelection = None, in_generationalSelection = None, in_populationSize = 100, in_parentRate = 0.01, in_childrenRate = 0.5, in_crossoverRate = 0.0, in_keepBest = False, in_introduceAlien = False):
         self.m_fitnessFunction = in_fitnessFunction
@@ -139,6 +146,47 @@ class TournamentSelection(SelectionFunction):
                 best = individual
         return best
 
+# Allows duplicates
+class RankSelection(SelectionFunction):
+    def __init__(self, in_rankBias = 1):
+        self.m_rankBias = in_rankBias
+
+     # Selects according to tournament results
+    def __call__(self, in_populationList, numToSelect):
+        rankSum, rankList = self.createRankList(in_populationList)
+        # select one at a time by rank selection
+        selectedList = [None]*numToSelect
+        while numToSelect > 0:
+            numToSelect -= 1
+            index, individual = self.rankSelection(rankList, rankSum) 
+            selectedList[numToSelect] =  individual
+        return selectedList
+
+    def createRankList(self, in_populationList):
+        # make copy of original list
+        in_populationList = list(in_populationList)
+        in_populationList.sort(fitnessCompare)
+        index = 0
+        popSize = len(in_populationList)
+        rankList = [None]*popSize
+        rankSum = 0
+        while index < popSize:
+            rankList[index] = (in_populationList[index], (index+1)**self.m_rankBias)
+            rankSum += rankList[index][1]
+            index += 1
+        return rankSum, rankList
+    
+    def rankSelection(self, in_rankList, in_rankSum):
+        # make choice according to p(individual) = biasedRank(Individual)/sumBiasedRanks
+        randChoice = in_rankSum*random.random()
+        sumForChoice = 0.0
+        index = 0
+        for individual, rank in in_rankList:
+            sumForChoice += rank
+            if randChoice < sumForChoice :
+                return index, individual
+            index += 1
+
 # Avoids duplicates
 class ProbabilisticFitnessSelection(SelectionFunction):
     def __init__(self, in_dropMinPercentage = 0.1):
@@ -201,8 +249,6 @@ class ChildrenAndBestCurrent(GenerationalSelectionFunction):
         # make copy of original list
         in_currentGeneration = list(in_currentGeneration) 
         # sort current generation by fitness
-        def fitnessCompare(x, y):
-            return cmp(x[1],y[1])
         in_currentGeneration.sort(fitnessCompare, reverse=True)
         return in_children + in_currentGeneration[0:in_numToSelect-numChildren]
 
@@ -214,7 +260,7 @@ if __name__ == "__main__":
         return random.randint(-1000,1000)
     def mutate(ind):
         return random.choice([ind-1,ind+1])
-    geneticAlgorithm = GeneticAlgorithm(fit, creatRand, mutate, in_parentSelection = TournamentSelection())
+    geneticAlgorithm = GeneticAlgorithm(fit, creatRand, mutate, in_parentSelection = RankSelection())
     print 'result: ' + str(geneticAlgorithm.run(in_maxGenerations = 10000, in_populationSize = 1000, in_staleStop = 100))
 
    
