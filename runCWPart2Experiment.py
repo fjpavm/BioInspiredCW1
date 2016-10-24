@@ -64,9 +64,9 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_popS
     
 
 # population size and children rate experiment
-childrenRateList = [0.01, 0.25, 0.5, 0.75, 0.99] 
-popSizeList = [50, 100, 250, 500]
+childrenRateList = [ 0.5] 
+popSizeList = [ 250]
 for childRate in childrenRateList:
     for popSize in popSizeList:
         print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate)
-        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.2)
+        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05)

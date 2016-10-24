@@ -7,8 +7,9 @@ def randomUniform(in_min, in_max):
     return in_min + (in_max-in_min)*random.random()
 
 class VectorGAOperators(object):
-    def __init__(self, in_dimensions, in_minValues = None, in_maxValues = None):
+    def __init__(self, in_dimensions, in_deviation = 0.1, in_minValues = None, in_maxValues = None):
         self.m_dimensions = in_dimensions
+        self.m_deviation = in_deviation
         # use default -5.0 for COCO platform
         if in_minValues == None:
             in_minValues = numpy.array([-5]*in_dimensions).astype(float)
@@ -22,7 +23,7 @@ class VectorGAOperators(object):
     def mutate(self, in_vector):
         in_vector = numpy.array(in_vector).astype(float)
         # apply a random perturbation drawn from a normal function (= Gaussian with mean 0 and deviation 1)
-        return numpy.fmax(self.m_minValues, numpy.fmin(self.m_maxValues, (in_vector + numpy.random.standard_normal(self.m_dimensions))))
+        return numpy.fmax(self.m_minValues, numpy.fmin(self.m_maxValues, (in_vector + self.m_deviation*numpy.random.standard_normal(self.m_dimensions))))
 
     def boxcrossover(self, in_vector1, in_vector2):
         resultVector = []
