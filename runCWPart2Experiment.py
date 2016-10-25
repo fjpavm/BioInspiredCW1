@@ -11,22 +11,22 @@ import VectorGAOperators
 datapathbase = 'GA'
 
 # dimensions = (2, 3, 5, 10, 20, 40)
-dimensions = (5,10)
+dimensions = (5,)
 function_ids = bbobbenchmarks.nfreeIDs 
 instances = range(1, 6) + range(41, 51) 
 
-def createPopulationSelection(in_popSelect, in_popSelectParam):
-    if in_popSelect == 'T':
-        return GeneticAlgorithm.TournamentSelection(in_popSelectParam)
-    if in_popSelect == 'B':
-        return GeneticAlgorithm.RankSelection(in_popSelectParam)
+def createPopulationSelection(in_parentSelect, in_parentSelectParam):
+    if in_parentSelect == 'T':
+        return GeneticAlgorithm.TournamentSelection(in_parentSelectParam)
+    if in_parentSelect == 'R':
+        return GeneticAlgorithm.RankSelection(in_parentSelectParam)
 
-def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_popSelect = 'T', in_popSelectParam = 2, in_crossoverRate = 0.0, in_keepBest = False, in_alien = False):
+def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_parentSelect = 'T', in_parentSelectParam = 2, in_crossoverRate = 0.0, in_keepBest = False, in_alien = False):
     t0 = time.time()
     np.random.seed(int(t0))
     opts = dict(algid='GeneticAlgorithm',
             comments='')
-    datapath = datapathbase + '_P' + str(in_popSize) + '_C' + str(in_childrenRate) + '_P' + str(in_parentRate) + '_' + in_popSelect + str(in_popSelectParam)
+    datapath = datapathbase + '_P' + str(in_popSize) + '_C' + str(in_childrenRate) + '_P' + str(in_parentRate) + '_' + in_parentSelect + str(in_parentSelectParam)
     if in_crossoverRate > 0.0:
         datapath += '_Cross' + str(in_crossoverRate)
     if in_keepBest == True:
@@ -42,7 +42,7 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_popS
 
                 # prepare and run GA with parameters
                 vectorGAOperators = VectorGAOperators.VectorGAOperators(dim)
-                parentSelection = createPopulationSelection(in_popSelect, in_popSelectParam)
+                parentSelection = createPopulationSelection(in_parentSelect, in_parentSelectParam)
                 def fitness(x):
                     return - f.evalfun(x)
                 ga = GeneticAlgorithm.GeneticAlgorithm(fitness, 
@@ -57,7 +57,7 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_popS
                                                        in_populationSize = in_popSize)
 
                 result = ga.run(in_targetFitness = -f.ftarget, in_staleStop = 100)
-                print 'result: ' + str(result)
+                print 'result: ' + str(result) + ' target: ' + str(-f.ftarget)
                 f.finalizerun()
             print '      date and time: %s' % (time.asctime())
         print '---- dimension %d-D done ----' % dim
@@ -65,8 +65,21 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_popS
 
 # population size and children rate experiment
 childrenRateList = [ 0.5] 
-popSizeList = [ 250]
-for childRate in childrenRateList:
-    for popSize in popSizeList:
-        print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate)
-        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05)
+popSizeList = [ 100]
+tournamentSize = 2
+#for childRate in childrenRateList:
+#    for popSize in popSizeList:
+#        print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate) + ' Tounament Size:' + str(tournamentSize)
+#        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize)
+
+popSize = 100
+childRate = 0.5
+#tournamentSizeList = [5, 10, 20]
+#for tournamentSize in tournamentSizeList:
+#        print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate) + ' Tounament Size:' + str(tournamentSize)
+#        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize)
+
+biasList = [0.5, 1, 2, 4]
+for bias in biasList:
+        print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate) + ' Rank Bias:' + str(bias)
+        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelect = 'R', in_parentSelectParam = bias)
