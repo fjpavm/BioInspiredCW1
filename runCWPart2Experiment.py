@@ -41,7 +41,7 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_pare
                 f.setfun(*bbobbenchmarks.instantiate(fun_id, iinstance=iinstance))
 
                 # prepare and run GA with parameters
-                vectorGAOperators = VectorGAOperators.VectorGAOperators(dim, in_deviation= 0.01)
+                vectorGAOperators = VectorGAOperators.VectorGAOperators(dim, in_deviationBase = 0.01, in_deviationExponents = [0, 0.5, 1, 2, 3, 4])
                 parentSelection = createPopulationSelection(in_parentSelect, in_parentSelectParam)
                 def fitness(x):
                     return - f.evalfun(x)
@@ -89,7 +89,10 @@ tournamentSize = 20
 
 #tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_alien = True)
 
-crossRateList = [0.05, 0.1, 0.25, 0.5, 0.75]
-for crossRate in crossRateList:
-    tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_crossoverRate = crossRate, in_alien = True)
+#crossRateList = [0.05, 0.1, 0.25, 0.5, 0.75]
+#for crossRate in crossRateList:
+#    tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_crossoverRate = crossRate, in_alien = True)
+
+crossRate = 0.15
+tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_crossoverRate = crossRate, in_alien = True)
 
