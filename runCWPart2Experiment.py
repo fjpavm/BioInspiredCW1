@@ -41,7 +41,7 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_pare
                 f.setfun(*bbobbenchmarks.instantiate(fun_id, iinstance=iinstance))
 
                 # prepare and run GA with parameters
-                vectorGAOperators = VectorGAOperators.VectorGAOperators(dim)
+                vectorGAOperators = VectorGAOperators.VectorGAOperators(dim, in_deviation= 0.01)
                 parentSelection = createPopulationSelection(in_parentSelect, in_parentSelectParam)
                 def fitness(x):
                     return - f.evalfun(x)
@@ -79,7 +79,17 @@ childRate = 0.5
 #        print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate) + ' Tounament Size:' + str(tournamentSize)
 #        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize)
 
-biasList = [0.5, 1, 2, 4]
-for bias in biasList:
-        print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate) + ' Rank Bias:' + str(bias)
-        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelect = 'R', in_parentSelectParam = bias)
+#biasList = [0.5, 1, 2, 4]
+#for bias in biasList:
+#        print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate) + ' Rank Bias:' + str(bias)
+#        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelect = 'R', in_parentSelectParam = bias)
+
+tournamentSize = 20
+#tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize)
+
+#tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_alien = True)
+
+crossRateList = [0.05, 0.1, 0.25, 0.5, 0.75]
+for crossRate in crossRateList:
+    tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_crossoverRate = crossRate, in_alien = True)
+
