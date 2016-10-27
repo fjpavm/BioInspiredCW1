@@ -41,7 +41,7 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_pare
                 f.setfun(*bbobbenchmarks.instantiate(fun_id, iinstance=iinstance))
 
                 # prepare and run GA with parameters
-                vectorGAOperators = VectorGAOperators.VectorGAOperators(dim, in_deviationBase = 0.01, in_deviationExponents = [0, 0.5, 1, 2, 3, 4])
+                vectorGAOperators = VectorGAOperators.VectorGAOperators(dim, in_deviationBase = 0.01, in_deviationExponents = [0, 0.5, 1, 2, 3])
                 parentSelection = createPopulationSelection(in_parentSelect, in_parentSelectParam)
                 def fitness(x):
                     return - f.evalfun(x)
@@ -56,7 +56,7 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_pare
                                                        in_introduceAlien = in_alien,
                                                        in_populationSize = in_popSize)
 
-                result = ga.run(in_targetFitness = -f.ftarget, in_staleStop = 100)
+                result = ga.run(in_maxGenerations = 10000, in_targetFitness = -f.ftarget, in_staleStop = 100)
                 print 'result: ' + str(result) + ' target: ' + str(-f.ftarget)
                 f.finalizerun()
             print '      date and time: %s' % (time.asctime())
