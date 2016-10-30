@@ -11,9 +11,10 @@ import VectorGAOperators
 datapathbase = 'GA'
 
 # dimensions = (2, 3, 5, 10, 20, 40)
-dimensions = (5,)
+# dimensions = (5,)
+dimensions = (2, 10, 40)
 function_ids = bbobbenchmarks.nfreeIDs 
-instances = range(1, 6) + range(41, 51) 
+instances = range(1, 16) # + range(41, 51) 
 
 def createPopulationSelection(in_parentSelect, in_parentSelectParam):
     if in_parentSelect == 'T':
@@ -56,7 +57,7 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_pare
                                                        in_introduceAlien = in_alien,
                                                        in_populationSize = in_popSize)
 
-                result = ga.run(in_maxGenerations = 10000, in_targetFitness = -f.ftarget, in_staleStop = 100)
+                result = ga.run(in_maxGenerations = 5000, in_targetFitness = -f.ftarget, in_staleStop = 100)
                 print 'result: ' + str(result) + ' target: ' + str(-f.ftarget)
                 f.finalizerun()
             print '      date and time: %s' % (time.asctime())
