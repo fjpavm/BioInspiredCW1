@@ -1,4 +1,4 @@
-import sys 
+import sys
 import os
 sys.path.append(os.path.normpath('./coco_python'))
 import time
@@ -13,8 +13,8 @@ datapathbase = 'GA'
 # dimensions = (2, 3, 5, 10, 20, 40)
 # dimensions = (5,)
 dimensions = (2, 10, 40)
-function_ids = bbobbenchmarks.nfreeIDs 
-instances = range(1, 16) # + range(41, 51) 
+function_ids = bbobbenchmarks.nfreeIDs
+instances = range(1, 16) # + range(41, 51)
 
 def createPopulationSelection(in_parentSelect, in_parentSelectParam):
     if in_parentSelect == 'T':
@@ -22,7 +22,7 @@ def createPopulationSelection(in_parentSelect, in_parentSelectParam):
     if in_parentSelect == 'R':
         return GeneticAlgorithm.RankSelection(in_parentSelectParam)
 
-def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_parentSelect = 'T', in_parentSelectParam = 2, in_crossoverRate = 0.0, in_keepBest = False, in_alien = False):
+def tryWithParameters(in_popSize, in_childrenRate, in_maxGenerations = 5000, in_parentRate = 0.01, in_parentSelect = 'T', in_parentSelectParam = 2, in_crossoverRate = 0.0, in_keepBest = False, in_alien = False):
     t0 = time.time()
     np.random.seed(int(t0))
     opts = dict(algid='GeneticAlgorithm',
@@ -46,7 +46,7 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_pare
                 parentSelection = createPopulationSelection(in_parentSelect, in_parentSelectParam)
                 def fitness(x):
                     return - f.evalfun(x)
-                ga = GeneticAlgorithm.GeneticAlgorithm(fitness, 
+                ga = GeneticAlgorithm.GeneticAlgorithm(fitness,
                                                        in_createRandomIndividual = vectorGAOperators.createRandom,
                                                        in_mutateIndividual = vectorGAOperators.mutate,
                                                        in_crossoverIndividuals = vectorGAOperators.boxcrossover,
@@ -57,15 +57,15 @@ def tryWithParameters(in_popSize, in_childrenRate, in_parentRate = 0.01, in_pare
                                                        in_introduceAlien = in_alien,
                                                        in_populationSize = in_popSize)
 
-                result = ga.run(in_maxGenerations = 5000, in_targetFitness = -f.ftarget, in_staleStop = 100)
+                result = ga.run(in_maxGenerations = in_maxGenerations, in_targetFitness = -f.ftarget, in_staleStop = 100)
                 print 'result: ' + str(result) + ' target: ' + str(-f.ftarget)
                 f.finalizerun()
             print '      date and time: %s' % (time.asctime())
         print '---- dimension %d-D done ----' % dim
-    
+
 
 # population size and children rate experiment
-childrenRateList = [ 0.5] 
+childrenRateList = [ 0.5]
 popSizeList = [ 100]
 tournamentSize = 2
 #for childRate in childrenRateList:
@@ -95,5 +95,13 @@ tournamentSize = 20
 #    tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_crossoverRate = crossRate, in_alien = True)
 
 crossRate = 0.15
-tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_crossoverRate = crossRate, in_alien = True)
+#tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_crossoverRate = crossRate, in_alien = True)
 
+popSizeList = [ 100, 250, 500]
+childrenRateList = [0.1, 0.25, 0.5, 0.75, 0.9]
+for popSize in popSizeList:
+    for childRate in childrenRateList:
+        print 'Start Pop:' + str(popSize) + ' Child Rate:' + str(childRate) + ' Tounament Size:' + str(tournamentSize)
+        # aproximate maxGen from max function calls, population size and child rate
+        maxGen =  round(150000.0/(popSize*childRate))
+        tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_maxGenerations = maxGen, in_parentRate = 0.05, in_parentSelectParam = tournamentSize)
