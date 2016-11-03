@@ -97,7 +97,7 @@ tournamentSize = 20
 crossRate = 0.15
 #tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_parentRate = 0.05, in_parentSelectParam = tournamentSize, in_crossoverRate = crossRate, in_alien = True)
 
-popSizeList = [ 100, 250, 500]
+popSizeList = [ 500, 250, 100]
 childrenRateList = [0.1, 0.25, 0.5, 0.75, 0.9]
 for popSize in popSizeList:
     for childRate in childrenRateList:
