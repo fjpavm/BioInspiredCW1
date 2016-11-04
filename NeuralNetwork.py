@@ -1,9 +1,12 @@
 import numpy
 import math
 
-# sigmoid with p = 1
+# sigmoid with p = 1 (scaling all weights by p would have same effect as having p multiply x)
 def sigmoid(x):
     return 1/(1+math.exp(-x))
+
+def linear(x):
+    return x
 
 class NeuralNetwork(object):
 
@@ -56,6 +59,15 @@ class NeuralNetwork(object):
                     currentLayerOutput[nodeIndex] = self.m_hiddenFunctions[layerIndex][nodeIndex](currentLayerOutput[nodeIndex])
         return currentLayerOutput
 
+    def asString(self):
+        stringResult = 'layer sizes:' + str(self.m_layerSizes) + '\n'
+        for layerIndex in range(0, self.m_outputLayerIndex):
+            stringResult += '\nlayer ' + str(layerIndex) + ' to ' + str(layerIndex+1) +'\n'
+            stringResult += 'matrix\n' + str(self.m_layerMatices[layerIndex]) + '\n'
+            if layerIndex+1 < self.m_outputLayerIndex:
+                stringResult += 'functions:' + str(self.m_hiddenFunctions[layerIndex]) + '\n'
+        return stringResult
+
 # For testing code during algorithm development
 if __name__ == "__main__":
     nn = NeuralNetwork([3,2,1])
@@ -63,6 +75,6 @@ if __name__ == "__main__":
     nn.setWeight(2, 0, 0, 1.0)
     for index in range(0,2):
         print 'matrix from ' + str(index) + ' to ' + str(index+1) + ':\n' +  str(nn.getWeightMatrix(index))
-
+    print nn.asString()
     res = nn([1, 2, 3])
     print 'result for [1, 2, 3]: ' + str(res)
