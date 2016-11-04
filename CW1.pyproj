@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{17634497-2bb7-43ac-bd27-40c15da760a5}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>NeuralNetwork.py</StartupFile>
+    <StartupFile>NeuralNetworkGAOperators.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -71,6 +71,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="NeuralNetwork.py" />
+    <Compile Include="NeuralNetworkGAOperators.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="runCWPart2Experiment.py" />
     <Compile Include="VectorGAOperators.py">
       <SubType>Code</SubType>
