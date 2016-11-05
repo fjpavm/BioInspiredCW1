@@ -40,7 +40,7 @@ class NeuralNetworkGAOperators(object):
         neuralNet = NeuralNetwork.NeuralNetwork(layerSizes, hiddenFunctions)
         for layerIndex in xrange(0, numHiddenLayers+1):
             mat = neuralNet.getWeightMatrix(layerIndex)
-            mat = numpy.matrix( 100.0*numpy.random.standard_normal( mat.shape ) )
+            mat = numpy.matrix( 10.0*numpy.random.standard_normal( mat.shape ) )
             neuralNet.setWeightMatrix(layerIndex, mat)
         return neuralNet
 
@@ -48,23 +48,20 @@ class NeuralNetworkGAOperators(object):
         nn = neuralNet.clone()
         mutationTypeRand = random.random()
         if mutationTypeRand > 0.10 or nn.m_outputLayerIndex == 1:
-            print 'weights'
             layer = random.randrange(0, nn.m_outputLayerIndex)
             self.mutateWeights(layer, nn)
             return nn
         if False and mutationTypeRand > 0.05:
-            print 'function'
             layer = random.randrange(0, nn.m_outputLayerIndex)
             self.mutateFunction(layer, nn)
             return nn
         if True:
-            print 'node'
             layer = random.randrange(1, nn.m_outputLayerIndex)
             self.mutateNodes(layer, nn)
             return nn
 
     def mutateWeights(self, layer, neuralNet):
-        deviation = random.choice( [1e1, 1e0, 1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6] )
+        deviation = random.choice( [1e3, 1e2, 1e1, 1e0, 1e-1, 1e-2, 1e-3, 1e-4] )
         mat = neuralNet.getWeightMatrix(layer)
         mat += numpy.matrix( deviation*numpy.random.standard_normal( mat.shape ) )
         neuralNet.setWeightMatrix(layer, mat)

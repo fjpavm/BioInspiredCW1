@@ -76,33 +76,33 @@ def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 100, in_test
             output = in_function(inputs)
             trainingSamples.append((inputs,output))
     trainingFunctions = NeuralNetworkGAOperators.NeuralNetworkError(trainingSamples)
-    neuralNetworkGAOperators = NeuralNetworkGAOperators.NeuralNetworkGAOperators(in_dim, in_maxHiddenLayers = 5, in_maxLayerSize = in_dim)
-    parentSelection = createPopulationSelection('T', 20)
+    neuralNetworkGAOperators = NeuralNetworkGAOperators.NeuralNetworkGAOperators(in_dim, in_maxHiddenLayers = 3)
+    parentSelection = createPopulationSelection('T', 5)
     def fitness(x):
-        -trainingFunctions.avgQuadraticError(x)
-    ga = GeneticAlgorithm.GeneticAlgorithm(fitness,
+        return -trainingFunctions.avgQuadraticError(x)
+    ga = GeneticAlgorithm.GeneticAlgorithm(in_fitnessFunction = fitness,
                                            in_createRandomIndividual = neuralNetworkGAOperators.createRandom,
                                            in_mutateIndividual = neuralNetworkGAOperators.mutate,
                                            in_crossoverIndividuals = None,
                                            in_parentSelection = parentSelection,
                                            in_parentRate = 0.05,
-                                           in_childrenRate = 0.5,
+                                           in_childrenRate = 0.15,
                                            in_keepBest = False,
                                            in_introduceAlien = True,
                                            in_populationSize = 100)
 
-    result = ga.run(in_maxGenerations = 10000, in_targetFitness = 0.0001, in_staleStop = 100)
+    result = ga.run(in_maxGenerations = 10000, in_targetFitness = -0.0001, in_staleStop = 100)
 
     if in_test:
         testingSamples = []
         numTestingSamples = 0
         while numTestingSamples < in_numTrainingSamples:
-            numTrainSamples += 1
+            numTestingSamples += 1
             inputs = vectorGAOperators.createRandom()
             output = in_function(inputs)
             testingSamples.append((inputs,output))
         testingFunctions = NeuralNetworkGAOperators.NeuralNetworkError(testingSamples)
-        print 'test value: ' + str(testingFunctions.avgQuadraticError(result[0]))
+        print 'test value: ' + str(testingFunctions.avgQuadraticError(result[0][0]))
     print 'neural network result: ' + str(result) 
     print result[0].asString()
     return result[0]
