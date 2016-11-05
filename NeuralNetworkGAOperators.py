@@ -47,12 +47,12 @@ class NeuralNetworkGAOperators(object):
     def mutate(self, neuralNet):
         nn = neuralNet.clone()
         mutationTypeRand = random.random()
-        if mutationTypeRand > 0.10 or nn.m_outputLayerIndex == 1:
+        if mutationTypeRand > 0.99 or nn.m_outputLayerIndex == 1:
             print 'weights'
             layer = random.randrange(0, nn.m_outputLayerIndex)
             self.mutateWeights(layer, nn)
             return nn
-        if mutationTypeRand > 0.05:
+        if False and mutationTypeRand > 0.05:
             print 'function'
             layer = random.randrange(0, nn.m_outputLayerIndex)
             self.mutateFunction(layer, nn)
@@ -77,14 +77,41 @@ class NeuralNetworkGAOperators(object):
         neuralNet.setFunctionForNodeOnHiddenLayer(layer, node, func)
 
     def mutateNodes(self, layer, neuralNet):
-        pass
+        if neuralNet.m_layerSizes[layer] == 1 :
+            self.addNode(layer, neuralNet)
+            return
+        if neuralNet.m_layerSizes[layer] >= self.m_maxLayerSize :
+            self.removeNode(layer, neuralNet)
+            return
+        addRemove = random.choice([self.addNode, self.removeNode])
+        addRemove(layer, neuralNet)
 
     def addNode(self, layer, neuralNet):
-        pass
+        prevLayerSize = neuralNet.m_layerSizes[layer-1]
+        layerSize = neuralNet.m_layerSizes[layer]
+        nextLayerSize = neuralNet.m_layerSizes[layer+1]
+        # add random column of size prevLayerSize+1 to matrix from layer-1 to layer
+        prevMatrix = numpy.matrix( numpy.insert(neuralNet.getWeightMatrix(layer-1), layerSize, numpy.random.standard_normal(prevLayerSize+1), axis = 1 ) )
+        # add random line of size nextLayerSize to matrix from layer to layer+1
+        nextMatrix = numpy.matrix( numpy.insert(neuralNet.getWeightMatrix(layer), layerSize, numpy.random.standard_normal(nextLayerSize), axis = 0 ) )
+        neuralNet.m_layerSizes[layer] = layerSize+1
+        neuralNet.setWeightMatrix(layer-1, prevMatrix)
+        neuralNet.setWeightMatrix(layer, nextMatrix)
+        neuralNet.m_hiddenFunctions[layer-1].append( random.choice( self.m_possibleFunctions ) )
 
     def removeNode(self, layer, neuralNet):
-        pass
-
+        prevLayerSize = neuralNet.m_layerSizes[layer-1]
+        layerSize = neuralNet.m_layerSizes[layer]
+        nextLayerSize = neuralNet.m_layerSizes[layer+1]
+        node = random.randrange(0, layerSize)
+        # remove column for node from matrix from layer-1 to layer
+        prevMatrix = numpy.matrix( numpy.delete(neuralNet.getWeightMatrix(layer-1), node, axis = 1 ) )
+        # remove line for node from matrix from layer to layer+1
+        nextMatrix = numpy.matrix( numpy.delete(neuralNet.getWeightMatrix(layer), node, axis = 0 ) )
+        neuralNet.m_layerSizes[layer] = layerSize-1
+        neuralNet.setWeightMatrix(layer-1, prevMatrix)
+        neuralNet.setWeightMatrix(layer, nextMatrix)
+        neuralNet.m_hiddenFunctions[layer-1].pop(node)
 
 
 # For testing code during algorithm development
@@ -94,7 +121,7 @@ if __name__ == "__main__":
     nn.setWeight(2, 0, 0, 1.0)
 
     nnGAop = NeuralNetworkGAOperators(in_numInputs = 3, in_maxHiddenLayers=3, in_maxLayerSize = 3)
-    nn = nnGAop.createRandom()
+    # nn = nnGAop.createRandom()
 
     print nn.asString()
     nn = nnGAop.mutate(nn)
