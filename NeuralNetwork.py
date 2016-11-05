@@ -1,9 +1,8 @@
 import numpy
-import math
 
 # sigmoid with p = 1 (scaling all weights by p would have same effect as having p multiply x)
 def sigmoid(x):
-    return 1/(1+math.exp(-x))
+    return .5 * (1.0 - numpy.tanh(.5 * x))
 
 def linear(x):
     return x
@@ -17,11 +16,15 @@ class NeuralNetwork(object):
         self.m_numHiddenLayers = len(in_layerSizes)-2
         self.m_layerSizes = in_layerSizes
         if(in_hiddenFunctions == None):
-            in_hiddenFunctions = []
+            self.m_hiddenFunctions = []
             for layerIndex in range(1, self.m_outputLayerIndex):
                 nodeFunctions = [sigmoid]*self.m_layerSizes[layerIndex]
-                in_hiddenFunctions.append(nodeFunctions)
-        self.m_hiddenFunctions = in_hiddenFunctions
+                self.m_hiddenFunctions.append(nodeFunctions)
+        else:
+            self.m_hiddenFunctions = []
+            for layerIndex in range(1, self.m_outputLayerIndex):
+                nodeFunctions = list(in_hiddenFunctions[layerIndex-1])
+                self.m_hiddenFunctions.append(nodeFunctions)
         self.m_layerMatices = []
         for layerIndex in range(1, self.m_outputLayerIndex+1):
             self.m_layerMatices.append(numpy.matrix(numpy.zeros((self.m_layerSizes[layerIndex-1]+1, self.m_layerSizes[layerIndex]))))
@@ -41,9 +44,7 @@ class NeuralNetwork(object):
 
     # index 1 means from input to first hidden layer (or output for Neural Nets without hidden layers)
     def setWeight(self, in_layerIndex, in_previousLayerNode, in_node, in_value):
-        print 'value:' + str(in_value) + ' ' + str(self.m_layerMatices[in_layerIndex-1][in_previousLayerNode,in_node])
         self.m_layerMatices[in_layerIndex-1][in_previousLayerNode,in_node] = float(in_value)
-        print self.m_layerMatices[in_layerIndex-1][in_previousLayerNode,in_node]
 
     def getWeight(self, in_layerIndex, in_previousLayerNode, in_node):
         return self.m_layerMatices[in_layerIndex-1][in_previousLayerNode, in_node]
@@ -59,6 +60,12 @@ class NeuralNetwork(object):
                     currentLayerOutput[nodeIndex] = self.m_hiddenFunctions[layerIndex][nodeIndex](currentLayerOutput[nodeIndex])
         return currentLayerOutput
 
+    def clone(self):
+        nn = NeuralNetwork(self.m_layerSizes, self.m_hiddenFunctions)
+        for layerIndex in xrange(0, self.m_outputLayerIndex):
+            nn.m_layerMatices[layerIndex] = numpy.matrix(self.m_layerMatices[layerIndex])
+        return nn
+
     def asString(self):
         stringResult = 'layer sizes:' + str(self.m_layerSizes) + '\n'
         for layerIndex in range(0, self.m_outputLayerIndex):
@@ -73,8 +80,9 @@ if __name__ == "__main__":
     nn = NeuralNetwork([3,2,1])
     nn.setWeight(1, 0, 0, 1.0)
     nn.setWeight(2, 0, 0, 1.0)
-    for index in range(0,2):
-        print 'matrix from ' + str(index) + ' to ' + str(index+1) + ':\n' +  str(nn.getWeightMatrix(index))
     print nn.asString()
-    res = nn([1, 2, 3])
-    print 'result for [1, 2, 3]: ' + str(res)
+    nnClone = nn.clone()
+    print nnClone.asString()
+    nn.setWeight(2, 0, 0, 2.0)
+    nn.setFunctionForNodeOnHiddenLayer(1, 1, linear)
+    print nnClone.asString()
