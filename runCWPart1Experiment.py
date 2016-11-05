@@ -104,8 +104,8 @@ def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 100, in_test
         testingFunctions = NeuralNetworkGAOperators.NeuralNetworkError(testingSamples)
         print 'test value: ' + str(testingFunctions.avgQuadraticError(result[0][0]))
     print 'neural network result: ' + str(result) 
-    print result[0].asString()
-    return result[0]
+    print result[0][0].asString()
+    return result[0][0]
 
 popSize = 100
 childRate = 0.5
