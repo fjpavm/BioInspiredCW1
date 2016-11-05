@@ -47,7 +47,7 @@ class NeuralNetworkGAOperators(object):
     def mutate(self, neuralNet):
         nn = neuralNet.clone()
         mutationTypeRand = random.random()
-        if mutationTypeRand > 0.99 or nn.m_outputLayerIndex == 1:
+        if mutationTypeRand > 0.10 or nn.m_outputLayerIndex == 1:
             print 'weights'
             layer = random.randrange(0, nn.m_outputLayerIndex)
             self.mutateWeights(layer, nn)
@@ -116,20 +116,28 @@ class NeuralNetworkGAOperators(object):
 
 # For testing code during algorithm development
 if __name__ == "__main__":
-    nn = NeuralNetwork.NeuralNetwork([3,2,1])
+    nn = NeuralNetwork.NeuralNetwork([2,2,1])
     nn.setWeight(1, 0, 0, 1.0)
     nn.setWeight(2, 0, 0, 1.0)
 
-    nnGAop = NeuralNetworkGAOperators(in_numInputs = 3, in_maxHiddenLayers=3, in_maxLayerSize = 3)
+    nnGAop = NeuralNetworkGAOperators(in_numInputs = 2, in_maxHiddenLayers=5, in_maxLayerSize = 3)
     # nn = nnGAop.createRandom()
 
-    print nn.asString()
-    nn = nnGAop.mutate(nn)
-    print nn.asString()
-    res = nn([1, 2, 3])
-    print 'result for [1, 2, 3]: ' + str(res)
-    print 'result for [0, 0, 0]: ' + str(nn([0, 0, 0]))
+    count = 1000
+    while count > 0 :
+        count -= 1
+        print nn.asString()
+        nn = nnGAop.mutate(nn)
+        print nn.asString()
+        samples = [([1.3,2.7],1.0),([0.0,1.0],0),([10.0,1.0],0),([0.5,1.0],0),([1.0,1.0],0),([0.0,5.0],0),([0.0,2.0],0)]
+        fitness = NeuralNetworkError(samples)
+        print 'avgQErr = ' + str(fitness.avgQuadraticError(nn))
+
+
+    # res = nn([1, 2, 3])
+    # print 'result for [1, 2, 3]: ' + str(res)
+    # print 'result for [0, 0, 0]: ' + str(nn([0, 0, 0]))
     print ''
-    samples = [([1,2,3],1.0),([0,0,0],0)]
-    fitness = NeuralNetworkError(samples)
-    print 'avgQErr = ' + str(fitness.avgQuadraticError(nn))
+    # samples = [([1,2,3],1.0),([0,0,0],0)]
+    # fitness = NeuralNetworkError(samples)
+    # print 'avgQErr = ' + str(fitness.avgQuadraticError(nn))

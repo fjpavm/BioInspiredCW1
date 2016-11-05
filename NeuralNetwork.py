@@ -14,7 +14,7 @@ class NeuralNetwork(object):
         self.m_numInputs = in_layerSizes[0]
         self.m_numOutputs = in_layerSizes[self.m_outputLayerIndex]
         self.m_numHiddenLayers = len(in_layerSizes)-2
-        self.m_layerSizes = in_layerSizes
+        self.m_layerSizes = list(in_layerSizes)
         if(in_hiddenFunctions == None):
             self.m_hiddenFunctions = []
             for layerIndex in range(1, self.m_outputLayerIndex):
