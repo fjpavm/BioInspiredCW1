@@ -9,7 +9,7 @@ def linear(x):
 
 def derivative(function, x):
     if function == sigmoid:
-        return sigmoid(x)*(1 - sigmoid(x))
+        return sigmoid(x)*(1.0 - sigmoid(x))
     if function == linear:
         return 1
 

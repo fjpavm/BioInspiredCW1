@@ -16,13 +16,15 @@ class NeuralNetworkError(object):
         return float(avgQErr)
 
 class NeuralNetworkGAOperators(object):
-    def __init__(self, in_numInputs, in_maxHiddenLayers = 1, in_numOutputs = 1, in_maxLayerSize = None):
+    def __init__(self, in_numInputs, in_maxHiddenLayers = 1, in_numOutputs = 1, in_maxLayerSize = None, in_useBackpropagation = True, in_samples = None):
         if in_maxLayerSize == None:
             in_maxLayerSize = in_numInputs*2
         self.m_maxHiddenLayers = in_maxHiddenLayers
         self.m_numInputs = in_numInputs
         self.m_numOutputs = in_numOutputs
         self.m_maxLayerSize = in_maxLayerSize
+        self.m_useBackpropagation = in_useBackpropagation and in_samples != None
+        self.m_samples = in_samples
         self.m_possibleFunctions = [NeuralNetwork.sigmoid, NeuralNetwork.linear]
 
     def createRandom(self):
@@ -47,6 +49,10 @@ class NeuralNetworkGAOperators(object):
     def mutate(self, neuralNet):
         nn = neuralNet.clone()
         mutationTypeRand = random.random()
+        if self.m_useBackpropagation == True and mutationTypeRand > 0.60 :
+            print 'backpropagate'
+            self.mutateBackpropagate(nn)
+            return nn
         if mutationTypeRand > 0.10 or nn.m_outputLayerIndex == 1:
             layer = random.randrange(0, nn.m_outputLayerIndex)
             self.mutateWeights(layer, nn)
@@ -60,6 +66,11 @@ class NeuralNetworkGAOperators(object):
             self.mutateNodes(layer, nn)
             return nn
 
+    def mutateBackpropagate(self, neuralNet):
+        samples = map(lambda tmp: random.choice(self.m_samples), xrange(5))
+        step = random.choice( [1e-2, 1e-4, 1e-8] )
+        neuralNet.backpropagate(samples, in_step = step)
+        
     def mutateWeights(self, layer, neuralNet):
         deviation = random.choice( [1e3, 1e2, 1e1, 1e0, 1e-1, 1e-2, 1e-3, 1e-4] )
         mat = neuralNet.getWeightMatrix(layer)
@@ -80,7 +91,7 @@ class NeuralNetworkGAOperators(object):
         if neuralNet.m_layerSizes[layer] >= self.m_maxLayerSize :
             self.removeNode(layer, neuralNet)
             return
-        addRemove = random.choice([self.addNode, self.removeNode])
+        addRemove = random.choice([self.addNode, self.removeNode, self.removeNode])
         addRemove(layer, neuralNet)
 
     def addNode(self, layer, neuralNet):
@@ -113,21 +124,19 @@ class NeuralNetworkGAOperators(object):
 
 # For testing code during algorithm development
 if __name__ == "__main__":
-    nn = NeuralNetwork.NeuralNetwork([2,2,1])
-    nn.setWeight(1, 0, 0, 1.0)
-    nn.setWeight(2, 0, 0, 1.0)
-
-    nnGAop = NeuralNetworkGAOperators(in_numInputs = 2, in_maxHiddenLayers=5, in_maxLayerSize = 3)
-    # nn = nnGAop.createRandom()
-
+    samples = [([1.3,2.7],1.0),([0.0,1.0],0),([10.0,1.0],0),([0.5,1.0],0),([1.0,1.0],0),([0.0,5.0],0),([0.0,2.0],0)]
+    fitness = NeuralNetworkError(samples)
+    nnGAop = NeuralNetworkGAOperators(in_numInputs = 2, in_maxHiddenLayers=5, in_maxLayerSize = 3, in_samples = samples)
+    nn = nnGAop.createRandom()
+    print nn.asString()
+    print 'avgQErr = ' + str(fitness.avgQuadraticError(nn))
     count = 1000
     while count > 0 :
         count -= 1
         print nn.asString()
         nn = nnGAop.mutate(nn)
         print nn.asString()
-        samples = [([1.3,2.7],1.0),([0.0,1.0],0),([10.0,1.0],0),([0.5,1.0],0),([1.0,1.0],0),([0.0,5.0],0),([0.0,2.0],0)]
-        fitness = NeuralNetworkError(samples)
+        
         print 'avgQErr = ' + str(fitness.avgQuadraticError(nn))
 
 

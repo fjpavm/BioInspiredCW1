@@ -66,7 +66,7 @@ def tryWithParameters(in_popSize, in_childrenRate, in_maxGenerations = 5000, in_
         print '---- dimension %d-D done ----' % dim
 
 
-def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 100, in_test = False):
+def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 500, in_test = False, in_fileToWrite = None):
     vectorGAOperators = VectorGAOperators.VectorGAOperators(in_dim)
     trainingSamples = []
     numTrainSamples = 0
@@ -76,7 +76,7 @@ def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 100, in_test
             output = in_function(inputs)
             trainingSamples.append((inputs,output))
     trainingFunctions = NeuralNetworkGAOperators.NeuralNetworkError(trainingSamples)
-    neuralNetworkGAOperators = NeuralNetworkGAOperators.NeuralNetworkGAOperators(in_dim, in_maxHiddenLayers = 3)
+    neuralNetworkGAOperators = NeuralNetworkGAOperators.NeuralNetworkGAOperators(in_dim, in_maxHiddenLayers = 4)
     parentSelection = createPopulationSelection('T', 5)
     def fitness(x):
         return -trainingFunctions.avgQuadraticError(x)
@@ -86,13 +86,16 @@ def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 100, in_test
                                            in_crossoverIndividuals = None,
                                            in_parentSelection = parentSelection,
                                            in_parentRate = 0.05,
-                                           in_childrenRate = 0.15,
+                                           in_childrenRate = 0.10,
                                            in_keepBest = False,
                                            in_introduceAlien = True,
-                                           in_populationSize = 100)
+                                           in_populationSize = 1000)
 
-    result = ga.run(in_maxGenerations = 10000, in_targetFitness = -0.0001, in_staleStop = 100)
+    result = ga.run(in_maxGenerations = 1, in_targetFitness = -0.0001, in_staleStop = 100)
 
+    f = None
+    if in_fileToWrite != None:
+        f = open(in_fileToWrite, 'w')
     if in_test:
         testingSamples = []
         numTestingSamples = 0
@@ -103,21 +106,34 @@ def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 100, in_test
             testingSamples.append((inputs,output))
         testingFunctions = NeuralNetworkGAOperators.NeuralNetworkError(testingSamples)
         print 'test value: ' + str(testingFunctions.avgQuadraticError(result[0][0]))
+        if f != None: f.write('test value: ' + str(testingFunctions.avgQuadraticError(result[0][0])) + '\n')
     print 'neural network result: ' + str(result) 
+    if f != None: f.write('neural network result: ' + str(result) + '\n')
     print result[0][0].asString()
+    if f != None: f.write(result[0][0].asString() + '\n')
+    if f != None: f.close()
     return result[0][0]
 
-popSize = 100
-childRate = 0.5
-tournamentSize = 20
-crossRate = 0.15
+# popSize = 100
+# childRate = 0.5
+# tournamentSize = 20
+# crossRate = 0.15
 # aproximate maxGen from max function calls, population size and child rate
-maxGen =  round(150000.0/(popSize*childRate))
+# maxGen =  round(150000.0/(popSize*childRate))
 # tryWithParameters(in_popSize = popSize, in_childrenRate = childRate, in_maxGenerations = maxGen, in_parentRate = 0.05, in_parentSelectParam = tournamentSize)
 
-opts = dict(algid='GeneticAlgorithm',
+opts = dict(algid='GANeuralNetworkTraining',
             comments='')
 f = fgeneric.LoggingFunction('NNTest', **opts)
-f.setfun(*bbobbenchmarks.instantiate(1, iinstance=1))
-trainNeuralNetwork(in_dim = 2, in_function = f, in_test = True)
-f.finalizerun()
+separFunc = 1
+lconFun = 6
+hconFun = 10
+multiFunc = 15
+multi2Fun = 20
+functionIds = [multi2Fun, multiFunc, hconFun, lconFun, separFunc]
+
+for dim in dimensions:
+    for funId in functionIds:
+        f.setfun(*bbobbenchmarks.instantiate(funId, iinstance=1))
+        trainNeuralNetwork(in_dim = dim, in_function = f, in_numTrainingSamples = dim*100, in_test = True, in_fileToWrite = 'NN_D' + str(dim) + '_f'+str(funId)+'.txt' )
+        f.finalizerun()
