@@ -7,6 +7,12 @@ def sigmoid(x):
 def linear(x):
     return x
 
+def derivative(function, x):
+    if function == sigmoid:
+        return sigmoid(x)*(1 - sigmoid(x))
+    if function == linear:
+        return 1
+
 class NeuralNetwork(object):
 
     def __init__(self, in_layerSizes, in_hiddenFunctions = None):
@@ -60,6 +66,44 @@ class NeuralNetwork(object):
                     currentLayerOutput[nodeIndex] = self.m_hiddenFunctions[layerIndex][nodeIndex](currentLayerOutput[nodeIndex])
         return currentLayerOutput
 
+    # applies stochastic backpropagation based on given samples
+    def backpropagate(self, in_samples, in_step = 0.1):
+        # initialize delta weights matrices to zero
+        layerUpdateMatices = []
+        for layerIndex in range(1, self.m_outputLayerIndex+1):
+            layerUpdateMatices.append(numpy.matrix(numpy.zeros((self.m_layerSizes[layerIndex-1]+1, self.m_layerSizes[layerIndex]))))
+        for sample in in_samples:
+            # forward propagate
+            currentLayerOutput = numpy.array(sample[0]).astype(float)
+            layerInputs = []
+            layerOutputDerivative = []
+            for layerIndex in xrange(0, self.m_outputLayerIndex):
+                currentLayerOutput = numpy.append(currentLayerOutput, 1.0)
+                layerInputs.append(currentLayerOutput)
+                currentLayerOutput = (currentLayerOutput*self.m_layerMatices[layerIndex]).A1
+                if layerIndex+1 < self.m_outputLayerIndex:
+                    outputDerivative = []
+                    for nodeIndex in range(0,self.m_layerSizes[layerIndex+1]):
+                        outputDerivative.append( derivative(self.m_hiddenFunctions[layerIndex][nodeIndex], currentLayerOutput[nodeIndex]) )
+                        currentLayerOutput[nodeIndex] = self.m_hiddenFunctions[layerIndex][nodeIndex](currentLayerOutput[nodeIndex])
+                    layerOutputDerivative.append(numpy.array(outputDerivative))
+            # backpropagate error
+            layerOutputErrors = []
+            outputError = sample[1] - currentLayerOutput
+            layerOutputErrors.insert(0, outputError)
+            for reverseLayerIndex in xrange(0, self.m_outputLayerIndex-1):
+                layerIndex = self.m_outputLayerIndex-reverseLayerIndex
+                outputError = (outputError*self.m_layerMatices[layerIndex-1].transpose()).A1
+                outputError = layerOutputDerivative[layerIndex-2]*outputError[:-1]
+                layerOutputErrors.insert(0, outputError)
+            # calculate delta weights matrices 
+            for layerIndex in xrange(0, self.m_outputLayerIndex):
+                layerUpdateMatix = in_step*numpy.matrix(layerInputs[layerIndex]).transpose()*numpy.matrix(layerOutputErrors[layerIndex])
+                layerUpdateMatices[layerIndex] += layerUpdateMatix
+        # apply delta weights
+        for layerIndex in xrange(0, self.m_outputLayerIndex):
+            self.m_layerMatices[layerIndex] += layerUpdateMatices[layerIndex]
+
     def clone(self):
         nn = NeuralNetwork(self.m_layerSizes, self.m_hiddenFunctions)
         for layerIndex in xrange(0, self.m_outputLayerIndex):
@@ -77,12 +121,20 @@ class NeuralNetwork(object):
 
 # For testing code during algorithm development
 if __name__ == "__main__":
-    nn = NeuralNetwork([3,2,1])
-    nn.setWeight(1, 0, 0, 1.0)
-    nn.setWeight(2, 0, 0, 1.0)
+    nn = NeuralNetwork([3,1])
+    nn.setWeight(1, 0, 0, 0.01)
+    nn.setWeight(1, 1, 0, 0.01)
+    nn.setWeight(1, 2, 0, 0.01)
+    nn.setWeight(1, 3, 0, 0.01)
     print nn.asString()
+    count = 0
+    while count < 10:
+        count +=1
+        nn.backpropagate([([1, 1, 1],1), ([0, 0, 0],0)])
+        # print nn.asString()
+        print str(nn([1, 1, 1])) + ' ' +  str(nn([0, 0, 0]))
     nnClone = nn.clone()
     print nnClone.asString()
-    nn.setWeight(2, 0, 0, 2.0)
+    # nn.setWeight(2, 0, 0, 2.0)
     nn.setFunctionForNodeOnHiddenLayer(1, 1, linear)
     print nnClone.asString()
