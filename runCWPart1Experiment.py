@@ -91,7 +91,7 @@ def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 500, in_test
                                            in_introduceAlien = True,
                                            in_populationSize = 1000)
 
-    result = ga.run(in_maxGenerations = 1, in_targetFitness = -0.0001, in_staleStop = 100)
+    result = ga.run(in_maxGenerations = 10000, in_targetFitness = -0.0001, in_staleStop = 100)
 
     f = None
     if in_fileToWrite != None:
