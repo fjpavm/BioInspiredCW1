@@ -76,8 +76,8 @@ def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 500, in_test
             output = in_function(inputs)
             trainingSamples.append((inputs,output))
     trainingFunctions = NeuralNetworkGAOperators.NeuralNetworkError(trainingSamples)
-    neuralNetworkGAOperators = NeuralNetworkGAOperators.NeuralNetworkGAOperators(in_dim, in_maxHiddenLayers = 4)
-    parentSelection = createPopulationSelection('T', 5)
+    neuralNetworkGAOperators = NeuralNetworkGAOperators.NeuralNetworkGAOperators(in_dim, in_maxHiddenLayers = 3)
+    parentSelection = createPopulationSelection('T', 20)
     def fitness(x):
         return -trainingFunctions.avgQuadraticError(x)
     ga = GeneticAlgorithm.GeneticAlgorithm(in_fitnessFunction = fitness,
@@ -89,9 +89,9 @@ def trainNeuralNetwork(in_dim, in_function, in_numTrainingSamples = 500, in_test
                                            in_childrenRate = 0.10,
                                            in_keepBest = False,
                                            in_introduceAlien = True,
-                                           in_populationSize = 1000)
+                                           in_populationSize = 500)
 
-    result = ga.run(in_maxGenerations = 10000, in_targetFitness = -0.0001, in_staleStop = 100)
+    result = ga.run(in_maxGenerations = 10000, in_targetFitness = -0.01, in_staleStop = 100)
 
     f = None
     if in_fileToWrite != None:
