@@ -1,0 +1,19 @@
+test value: 554826.814839
+neural network result: ((<NeuralNetwork.NeuralNetwork object at 0x10d9850>, -407041.7447616186), 454, 'stale', 554)
+layer sizes:[2, 4, 1]
+
+layer 0 to 1
+matrix
+[[ 0.13723781 -0.01653626 -0.37413003  0.15230728]
+ [ 0.15783228 -0.04982469  0.60351383  0.57412565]
+ [-0.10707728  0.02798201 -0.08004707 -0.35021037]]
+functions:[<function linear at 0x106f6e0>, <function linear at 0x106f6e0>, <function linear at 0x106f6e0>, <function linear at 0x106f6e0>]
+
+layer 1 to 2
+matrix
+[[ -588.40203512]
+ [ 1470.04084134]
+ [  -37.81339842]
+ [   -3.63414363]
+ [ 1379.1464841 ]]
+

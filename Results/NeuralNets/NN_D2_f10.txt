@@ -1,0 +1,10 @@
+test value: 1.31629462557e+14
+neural network result: ((<NeuralNetwork.NeuralNetwork object at 0x119abd0>, -155148346777851.7), 10000, 'maxGen', 10000)
+layer sizes:[2, 1]
+
+layer 0 to 1
+matrix
+[[  658657.41650945]
+ [ 3087931.55141774]
+ [ 3206825.37189795]]
+

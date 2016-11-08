@@ -1,0 +1,28 @@
+test value: 150794077.614
+neural network result: ((<NeuralNetwork.NeuralNetwork object at 0x10c4450>, -53969100.45436498), 9996, 'maxGen', 10000)
+layer sizes:[2, 4, 4, 1]
+
+layer 0 to 1
+matrix
+[[-0.0201523   0.01351802 -0.01828573  1.39028737]
+ [ 0.11639171 -0.09144361 -0.0276429  -0.9053679 ]
+ [-0.00953736 -0.16731925  0.15792713  1.05458064]]
+functions:[<function linear at 0x106f6e0>, <function linear at 0x106f6e0>, <function sigmoid at 0x106f668>, <function sigmoid at 0x106f668>]
+
+layer 1 to 2
+matrix
+[[  45.92277069   92.64082289  104.66508223  153.08374336]
+ [  -1.41668308    4.07852744 -212.74720832   38.81112337]
+ [ -84.03152367  -44.6771275   -21.85186587 -126.86322076]
+ [  -1.56770182    1.02393747   12.18794473    2.02627044]
+ [  58.24015231   44.4932849  -151.75193155  -20.87021113]]
+functions:[<function sigmoid at 0x106f668>, <function sigmoid at 0x106f668>, <function sigmoid at 0x106f668>, <function linear at 0x106f6e0>]
+
+layer 2 to 3
+matrix
+[[ 51501.85011769]
+ [ 43824.58759644]
+ [-30274.45818223]
+ [  -409.85079355]
+ [  7739.33906592]]
+
