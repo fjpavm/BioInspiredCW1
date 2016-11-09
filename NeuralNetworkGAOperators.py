@@ -42,7 +42,7 @@ class NeuralNetworkGAOperators(object):
         neuralNet = NeuralNetwork.NeuralNetwork(layerSizes, hiddenFunctions)
         for layerIndex in xrange(0, numHiddenLayers+1):
             mat = neuralNet.getWeightMatrix(layerIndex)
-            mat = numpy.matrix( 10.0*numpy.random.standard_normal( mat.shape ) )
+            mat = numpy.matrix( 0.1*numpy.random.standard_normal( mat.shape ) )
             neuralNet.setWeightMatrix(layerIndex, mat)
         return neuralNet
 
